@@ -59,12 +59,11 @@ function createSingleChip(user) {
     const spanEl = document.createElement('span')
     spanEl.innerText = user.username
 
-    let userId = user.id
-
     chipEl.append(avatarSmallEl, spanEl)
 
-    chipEl.addEventListener('click', function () {
-      chooseUser(userId)
+    chipEl.addEventListener("click", function () {
+      console.log("hello")
+      chooseUser()
     })
 
     return chipEl
@@ -126,7 +125,10 @@ function createPostForm() {
 
     formEl.addEventListener("submit", function(event) {
       event.preventDefault();
-      console.log(title.value, content.value)
+      let title = title.value
+      let content = content.value
+      let image = image.value
+      addPostData(title, content, image)
       formEl.reset()
     });
 
@@ -287,23 +289,98 @@ function createMulitplePosts(posts) {
     }
 }
 
-function chooseUser (userId) {
+function chooseUser(user) {
 
-  currentUserId === userId
+    chipEl = document.querySelectorAll(".chip")
 
-  // chipsEl = document.querySelectorAll(".chip")
-  // for (chipEl in chipsEl) {
-  //   if (currentUserId === userId) {
-  //     console.log(userId)
-    
-  //   const chipEl = document.querySelector(".chip")
-  //   chipEl.classList.add("active")
-  // }
+    console.log('hello')
+    currentUserId = user;
+
+    const currentChipEl = document.querySelector(".active");
+    if (currentChipEl !== null) {
+      currentChipEl.classList.remove("active");
+    }
+
+    console.log(chipEl)
+
+    chipEl.classList.add("active");
+  
 } 
 
-function addPostData() {
-  
+function addPostData(title, content, image) {
+
+  let post = {
+    "title": title,
+    "content": content,
+    "image": image,
+    "userId": currentUserId
+  }
+    fetch("http://localhost:3000/posts", {
+      method: "POST",
+      headers: {
+      'Content-Type': 'application/json',
+    },
+      body: JSON.stringify(post)
+  })
+  .then(response => response.json())
+  .then(post => {
+    console.log('Success:', post);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
 }
+
+// formEl.addEventListener("submit", function (event) {
+//   // - prevent the form from refreshing the page
+//   event.preventDefault();
+
+//   // if there's an active user
+//   if (currentUser !== null) {
+//     // - get and store comment data
+//     const comment = {
+//       content: formEl.comment.value,
+//       userId: currentUser.id,
+//       postId: post.id
+//     };
+
+
+// function getCommentData() {
+
+//   formEl.addEventListener("submit", function (event) {
+//     event.preventDefault();
+
+//     if (currentUser !== null) {
+//       const comment = {
+//         content: formEl.comment.value,
+//         userId: currentUser.id,
+//         postId: post.id
+//       }
+//       return comment
+//     }
+  
+
+
+
+// function addComment(comment) {
+
+//     fetch("http://localhost:3000/comments", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(comment)
+//     })
+//       .then(function (response) {
+//         return response.json();
+//       })
+//       .then(function (newCommentFromServer) {
+//         const commentEl = createCommentElement(newCommentFromServer);
+//         postCommentsEl.append(commentEl);
+//         formEl.reset();
+//       });
+//     }
+  
 
 
 createPage()

@@ -1,7 +1,7 @@
-let currentUserId = 0
-
 let users = [];
 let posts = [];
+
+let currentUserId = 0
 
 // Create the HTML for the app
 function createPage() {
@@ -60,11 +60,6 @@ function createSingleChip(user) {
     spanEl.innerText = user.username
 
     chipEl.append(avatarSmallEl, spanEl)
-
-    chipEl.addEventListener("click", function () {
-      console.log("hello")
-      chooseUser()
-    })
 
     return chipEl
 }
@@ -125,11 +120,10 @@ function createPostForm() {
 
     formEl.addEventListener("submit", function(event) {
       event.preventDefault();
-      let title = title.value
-      let content = content.value
-      let image = image.value
+      let image = formEl.image.value
+      let title = formEl.title.value
+      let content = formEl.content.value
       addPostData(title, content, image)
-      formEl.reset()
     });
 
     divBtnEl.append(createBtnEl, submitBtnEl)
@@ -249,16 +243,31 @@ function getUsersData() {
         createMultipleChips(usersData);
       });
 }
-//Create mulitple chips
+
+//Create mulitple chips and select current user
 function createMultipleChips(users) {
+
     for (const user of users) {
       
       const chipEl = createSingleChip(user);
 
+
+      chipEl.addEventListener("click", function () {
+  
+        const currentChipEl = document.querySelector(".active");
+
+        currentUserId = user.id
+
+
+        if (currentChipEl !== null) {
+          currentChipEl.classList.remove("active");
+        }
+  
+        chipEl.classList.add("active");
+      });
+      
       const wrapperEl = document.querySelector(".wrapper")
       wrapperEl.append(chipEl)
-
-      
     }
 }
 
@@ -289,32 +298,18 @@ function createMulitplePosts(posts) {
     }
 }
 
-function chooseUser(user) {
-
-    chipEl = document.querySelectorAll(".chip")
-
-    console.log('hello')
-    currentUserId = user;
-
-    const currentChipEl = document.querySelector(".active");
-    if (currentChipEl !== null) {
-      currentChipEl.classList.remove("active");
-    }
-
-    console.log(chipEl)
-
-    chipEl.classList.add("active");
-  
-} 
-
 function addPostData(title, content, image) {
 
   let post = {
     "title": title,
     "content": content,
-    "image": image,
+    "image": { 
+      "src": image
+    },
     "userId": currentUserId
   }
+
+
     fetch("http://localhost:3000/posts", {
       method: "POST",
       headers: {
@@ -324,6 +319,9 @@ function addPostData(title, content, image) {
   })
   .then(response => response.json())
   .then(post => {
+    const postEl = createPost(post);
+    ulEl.append(postEl);
+    formEl.reset();
     console.log('Success:', post);
   })
   .catch((error) => {
@@ -380,7 +378,10 @@ function addPostData(title, content, image) {
 //         formEl.reset();
 //       });
 //     }
-  
+
+function addPostToFeed() {
+
+}
 
 
 createPage()

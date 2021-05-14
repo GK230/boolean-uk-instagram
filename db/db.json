@@ -49,6 +49,15 @@
       },
       "likes": 0,
       "userId": 2
+    },
+    {
+      "title": "Nature at it's best",
+      "content": "This girl is getting nature therapy!",
+      "image": {
+        "src": "https://images.pexels.com/photos/3412818/pexels-photo-3412818.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+      },
+      "userId": 2,
+      "id": 5
     }
   ],
   "comments": [
